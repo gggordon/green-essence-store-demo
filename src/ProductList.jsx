@@ -8,10 +8,11 @@ import { addItem } from './CartSlice';
 function ProductList() {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-    const [addedToCart, setAddedToCart] = useState({});
+    const cartItems = useSelector(state => state.cart.items);
+    //const [addedToCart, setAddedToCart] = useState(cartItems.map((item)=>item.name));
     const dispatch = useDispatch();
 
-    const cartItems = useSelector(state => state.cart.items);
+    
 
     const cartQuantity = cartItems.reduce( (total,item) => total + item.quantity,0);
 
@@ -256,13 +257,23 @@ function ProductList() {
         e.preventDefault();
         setShowCart(false);
     };
+
+    const hasBeenAddedToCart = (productName) => cartItems.filter((item)=>item.name==productName).length>0;
+
     const handleAddToCart = (product) => {
-        dispatch(addItem(product));
-        setAddedToCart((prevState) => ({
-            ...prevState,
-            [product.name]: true, // Set the product name as key and value as true to indicate it's added to cart
-        }));
+        if(!hasBeenAddedToCart(product.name)){
+            dispatch(addItem(product));
+            // setAddedToCart((prevState) => ([
+            //     ...prevState,
+            //     product.name, // Set the product name as key and value as true to indicate it's added to cart
+            // ]));
+        }
+        
     };
+
+
+
+    
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -303,7 +314,7 @@ function ProductList() {
                                         <div className="product-description">{plant.description}</div>
                                         <div className="product-cost">${plant.cost}</div>
 
-                                        <button className="product-button" onClick={() => handleAddToCart(plant)}>Add to Cart</button>
+                                        <button className={'product-button '+( hasBeenAddedToCart(plant.name)  ? 'added-to-cart' :'' )} onClick={() => handleAddToCart(plant)}>Add{ hasBeenAddedToCart(plant.name) ? 'ed' :'' } to Cart</button>
                                     </div>
                                 ))}
                             </div>
@@ -312,7 +323,10 @@ function ProductList() {
 
                 </div>
             ) : (
-                <CartItem onContinueShopping={handleContinueShopping} />
+                <CartItem 
+                    onContinueShopping={handleContinueShopping} 
+                   
+                />
             )}
         </div>
     );
