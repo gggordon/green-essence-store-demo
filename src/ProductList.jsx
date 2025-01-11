@@ -5,7 +5,7 @@ import './ProductList.css'
 import CartItem from './CartItem';
 import { addItem } from './CartSlice';
 
-function ProductList() {
+function ProductList({onHomePageClick}) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
     const cartItems = useSelector(state => state.cart.items);
@@ -243,6 +243,12 @@ function ProductList() {
         fontSize: '30px',
         textDecoration: 'none',
     }
+
+    const handleLogoClick = (e) => {
+        e.preventDefault();
+        setShowCart(false);
+        onHomePageClick();
+    }
     const handleCartClick = (e) => {
         e.preventDefault();
         setShowCart(true); // Set showCart to true when cart icon is clicked
@@ -278,9 +284,9 @@ function ProductList() {
         <div>
             <div className="navbar" style={styleObj}>
                 <div className="tag">
-                    <div className="luxury">
+                    <div className="luxury" onClick={handleLogoClick}>
                         <img src="https://cdn.pixabay.com/photo/2020/08/05/13/12/eco-5465432_1280.png" alt="" />
-                        <a href="/" style={{ textDecoration: 'none' }}>
+                        <a onClick={handleLogoClick} style={{ textDecoration: 'none' }}>
                             <div>
                                 <h3 style={{ color: 'white' }}>Paradise Nursery</h3>
                                 <i style={{ color: 'white' }}>Where Green Meets Serenity</i>
